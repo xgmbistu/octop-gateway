@@ -11,7 +11,7 @@
 | 流程 | 6 步 |
 | 摘要 | 新增一个 hello world HTTP 接口 |
 | 任务类型 | 功能新增 |
-| 状态 | 已本地提交（Push 未授权） |
+| 状态 | 已推送至 origin/feature/hello-world-http-api |
 | 创建日期 | 2026-11-24 |
 | 负责人 | |
 | Issue | |
@@ -66,4 +66,4 @@
 
 - 提交准备：已完成（message 与显式暂存文件见 `06-review-commit.md`）
 - Commit：已执行，本地提交 `0e92278`（15 个文件）
-- Push：未执行（用户授权范围仅为本地提交）
+- Push：已执行，`feature/hello-world-http-api` → `origin/feature/hello-world-http-api`，已建立 upstream 跟踪

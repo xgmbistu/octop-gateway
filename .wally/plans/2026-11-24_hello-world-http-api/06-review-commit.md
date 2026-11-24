@@ -54,8 +54,8 @@
 ## 执行结果
 
 - Commit：已执行。本地提交 `0e92278`（`feat: add standalone hello world HTTP service`），15 个文件，作者 `CodeBuddy <codebuddy@localhost>`（本仓未配置身份，已在本仓本地配置）。
-- Push：未执行（用户授权范围仅为本地提交）。
-- 提交后工作树干净；本阶段记录实际结果如上。
+- Push：已执行。`git push -u origin feature/hello-world-http-api` 成功，新建远端分支并设置 upstream；用户后续明确授权 Push。
+- 推送后工作树干净；本阶段记录实际结果如上。
 
 ## 知识库证据
 
