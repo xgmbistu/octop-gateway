@@ -187,6 +187,35 @@ asyncio.run(main())
 
 Copy `.env.example` to `.env` for environment-based configuration.
 
+## Web service
+
+A minimal aiohttp service is available for health/probe checks. Start it with:
+
+```bash
+python -m octop_gateway.web --host 0.0.0.0 --port 8080
+```
+
+### GET /welcome
+
+Native `GET` route, no authentication required.
+
+- Request: `GET /welcome` (no auth headers)
+- Response: `200 OK`, `Content-Type: application/json`
+- Body: `{"message": "welcome"}`
+
+Example:
+
+```bash
+curl -i http://127.0.0.1:8080/welcome
+# HTTP/1.1 200 OK
+# Content-Type: application/json; charset=utf-8
+#
+# {"message": "welcome"}
+```
+
+Any other HTTP method on `/welcome` returns `405 Method Not Allowed`. The
+application factory is `octop_gateway.web.create_app()`.
+
 ## Documentation
 
 - [What is Octop Gateway?](#what-is-octop-gateway)
