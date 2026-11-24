@@ -187,11 +187,42 @@ asyncio.run(main())
 
 Copy `.env.example` to `.env` for environment-based configuration.
 
+## HTTP API
+
+The package ships a small native HTTP service (Python standard library only)
+that exposes a health/welcome endpoint. Start it with:
+
+```bash
+python -m octop_gateway.web
+```
+
+Host and port come from `--host` / `--port` flags, or the `WALLY_HOST` /
+`WALLY_PORT` environment variables (defaults `0.0.0.0` / `8080`), e.g.
+`python -m octop_gateway.web --port 9000`.
+
+### `GET /welcome`
+
+Public endpoint (no authentication required).
+
+- Response: `200 OK`, `Content-Type: application/json`
+- Body: `{"message":"welcome"}`
+- Any other path returns `404`.
+
+Example:
+
+```bash
+curl -i http://localhost:8080/welcome
+# HTTP/1.0 200 OK
+# Content-Type: application/json
+# {"message": "welcome"}
+```
+
 ## Documentation
 
 - [What is Octop Gateway?](#what-is-octop-gateway)
 - [Why Octop Gateway?](#why-octop-gateway)
 - [How to Use](#how-to-use)
+- [HTTP API](#http-api)
 - **Reference**
   - [Architecture](#architecture)
   - [Development](#development)
