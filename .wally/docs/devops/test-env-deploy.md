@@ -4,7 +4,7 @@
 
 ## 环境与执行
 
-- 环境类型、地址、资源归属、访问和部署授权边界：**未定义**。本仓为 Python 库（pyproject.toml：hatchling 构建，发布为 PyPI 包 octop-gateway），无常驻服务，无 Dockerfile / Compose / k8s / 部署脚本；env.md 与本文均为未填写模板，缺测试环境地址、资源归属与授权边界。
+- 环境类型、地址、资源归属、访问和部署授权边界：**未定义**。本仓为 Python 库（pyproject.toml：hatchling 构建，发布为 PyPI 包 octop-gateway），无常驻服务，无 Dockerfile / Compose / k8s / 部署脚本；env.md 仍为未填写模板，本文据实记录环境缺失；缺测试环境地址、资源归属与授权边界。
 - 创建/查询/代码同步/部署命令：**无真实部署命令**。仓库仅有构建/发布动作：make build（wheel + sdist）、make publish-test（PYPI_REPO=testpypi → TestPyPI）、make publish（PyPI，PYPI_TOKEN），以及 .github/workflows/release.yml（v* tag 触发：make test → make build → pypa/gh-action-pypi-publish）。这些是发布动作，非测试环境部署，不能作为 deploy.command。
 - 依赖、配置和凭证来源（不记录明文）：依赖见 pyproject.toml / uv.lock / make install（uv sync --extra dev）；发布凭证 PYPI_TOKEN（交互输入或环境变量）/ secrets.PYPI_API_TOKEN。无部署环境凭证获取方式。
 - 就绪与生效检查命令：**无**（无健康检查 / smoke / 生效验证入口）。

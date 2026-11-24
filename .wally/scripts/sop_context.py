@@ -108,7 +108,7 @@ def route(root):
         raise ValueError(
             "No SOP task for branch " + branch + ". Before creating a task, ask the user whether to cut "
             "a new branch for this SOP and wait for the answer. Do not bind " + shlex.quote(branch) +
-            " until they choose. Read .wally/profiles/project.md, then run "
+            " until they choose. Once they choose, read .wally/profiles/project.md and run "
             "python3 .wally/scripts/create_task.py YYYY-MM-DD_title --branch <chosen-branch>. "
             "Create and switch first when they want a new branch; staying is allowed only off main/master/HEAD. "
             "The script performs no Git operations.")
@@ -142,20 +142,25 @@ def route(root):
         raise ValueError("Current phase number and file link disagree; repair the overview before implementation")
     role = roles[filename[3:]]
     documents = [(".wally/core/entry.md", entry), (overview.relative_to(root).as_posix(), text)]
+    task_profile = task / "profile.md"
+    profile_rel = (task_profile.relative_to(root).as_posix()
+                   if task_profile.is_file() else ".wally/profiles/project.md")
     for relative in (core + "/workflow.md", core + "/gates.md", core + "/interaction.md",
-                     (task / "profile.md").relative_to(root).as_posix(),
+                     profile_rel,
                      (task / filename).relative_to(root).as_posix()):
         documents.append((relative, read(root, relative)))
     if role == "03":
-        rules_root = task / "_rules" / "rules"
+        legacy_rules = task / "_rules" / "rules"
+        rules_root = legacy_rules if legacy_rules.is_dir() else (root / ".wally" / "rules")
+        rules_boundary = task.resolve() if rules_root == legacy_rules else root.resolve()
         if rules_root.is_dir() and not rules_root.is_symlink():
-            if not is_relative_to(rules_root.resolve(), task.resolve()):
-                raise ValueError("task rules snapshot escapes the task")
+            if not is_relative_to(rules_root.resolve(), rules_boundary):
+                raise ValueError("rules directory escapes allowed boundary")
             for path in sorted(rules_root.rglob("*")):
                 if path.is_symlink() or not path.is_file():
                     continue
                 if not is_relative_to(path.resolve(), rules_root.resolve()):
-                    raise ValueError("task rule escapes the snapshot")
+                    raise ValueError("rule file escapes rules directory")
                 relative = path.relative_to(root).as_posix()
                 documents.append((relative, read(root, relative)))
     # Old immutable releases predate this policy; never substitute latest Core.
@@ -181,9 +186,10 @@ def context_text(result, compact=False):
                 # discovery, progress, and the current phase in startup context.
                 content = re.split(r"(?m)^## (?:Time log|\u65f6\u95f4\u8bb0\u5f55)\s*$", content, maxsplit=1)[0]
                 selected.append((path + " (routing and progress)", content))
-            elif path in (result["core"] + "/knowledge.md", result["task"] + "/profile.md", result["task"] + "/" + result["phase_file"]):
+            elif path in (result["core"] + "/knowledge.md", result["task"] + "/profile.md",
+                          ".wally/profiles/project.md", result["task"] + "/" + result["phase_file"]):
                 selected.append((path, content))
-            elif path.startswith(result["task"] + "/_rules/rules/"):
+            elif path.startswith((result["task"] + "/_rules/rules/", ".wally/rules/")):
                 selected.append((path, content))
         documents = selected
         header += ("\nStartup outline only. Run `python3 .wally/scripts/sop_context.py` to read the full bound "
@@ -211,7 +217,7 @@ def plain_document(root, value, inspect_file=True):
         parts = relative.parts
         if not parts or any(p == ".." for p in parts):
             return False
-        if parts[0] in (".git", ".agents", ".codex", ".cursor", ".claude", ".codebuddy", "skills"):
+        if parts[0] in (".git", ".agents", ".codex", ".cursor", ".claude", ".codebuddy", ".windsurf", ".agent", "skills"):
             return False
         if parts[0] == ".wally" and (len(parts) < 3 or parts[1] != "docs"):
             return False
@@ -326,7 +332,12 @@ def require_confirmation(root, issue):
 
 
 def accept_confirmation(root, result, prompt):
-    match = re.fullmatch(r"CONFIRM SOP ([0-9a-f]{12})", str(prompt).strip())
+    # Prefer a dedicated line, but also accept prompts wrapped with CLI
+    # system-reminders / leading prose (fullmatch used to drop those).
+    text = str(prompt or "").strip()
+    match = re.search(r"(?m)^\s*CONFIRM SOP ([0-9a-f]{12})\s*$", text, re.IGNORECASE)
+    if not match:
+        match = re.search(r"CONFIRM SOP ([0-9a-f]{12})", text, re.IGNORECASE)
     if not match:
         return ""
     path, data = confirmation_state(root)

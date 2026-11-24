@@ -1,0 +1,13 @@
+---
+description: Wally SOP routing and managed skills entry (always follow AGENTS.md)
+alwaysApply: true
+---
+
+# Wally SOP 协作规则
+
+请以仓库根目录的 `AGENTS.md` 作为统一协作入口，并在其中追加的受管 SOP 规则与项目原有约定基础上执行：
+
+- 先按 `.wally/core/scope.md` 判断请求类型，咨询和轻量文档操作不新建 SOP 任务。
+- 开发任务必须先读 `.wally/core/entry.md` 并运行 `python3 .wally/scripts/sop_context.py` 加载绑定版本与当前阶段。
+- 仓库受管 Skills 固定位于 `.agents/skills/`（已软链到各主流 IDE `skills/` 目录）；进入 `01 Clarify`（未正式跳过）时必须先读取 `.agents/skills/clarify/SKILL.md`。
+- 仓库原有规则与用户指令继续生效，本规则仅做补充，不覆盖项目已有约定。
