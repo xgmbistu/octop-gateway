@@ -31,9 +31,11 @@
 
 ## 外部系统与资源
 
-- 无外部系统写入：未调用平台 API，未发布 PyPI，未操作远程环境。
+- PR：已创建 `xgmbistu/octop-gateway#5`（open），`base: main <- head: feature/hello-world-http-api`。
+- base 选择说明：项目约定 feature PR 入 `develop`，但远端无 `develop` 分支，故以 `main` 为 base，已在 PR 描述中说明。
+- 未调用平台 API，未发布 PyPI，未操作远程部署环境。
 - 本地 HTTP 服务 smoke 进程已 terminate，无残留资源。
-- 无凭证获取或泄露：新增文件扫描未发现密钥/内部地址。
+- 无凭证获取或泄露：新增文件扫描未发现密钥/内部地址；API 调用使用仓库 remote 已有凭据且未回显。
 
 ## 提交准备
 

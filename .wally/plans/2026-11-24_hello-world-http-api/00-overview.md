@@ -11,7 +11,7 @@
 | 流程 | 6 步 |
 | 摘要 | 新增一个 hello world HTTP 接口 |
 | 任务类型 | 功能新增 |
-| 状态 | 已推送至 origin/feature/hello-world-http-api |
+| 状态 | PR #5 已提交（open，base main） |
 | 创建日期 | 2026-11-24 |
 | 负责人 | |
 | Issue | |
