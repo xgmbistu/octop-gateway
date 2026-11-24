@@ -708,23 +708,35 @@ _This file is a living document — keep it in sync when structure, conventions,
 
 确认属于开发任务后，任务简单、改动少、只加一个页面都不是跳过 SOP 的理由。读取本入口不代表已完成任务路由；在探索实现方案、编辑业务文件或执行变更命令前，必须完成：
 
-1. 读取 `.wally/core/entry.md`，运行 `git branch --show-current`，按分支定位任务。无任务时先读 `.wally/profiles/project.md`，询问用户是否为本次 SOP 新切一条分支，等答复后再用 `.wally/scripts/create_task.py` 在选定分支上创建任务。不要猜测任务目录、套用其他任务，或把当前分支直接当成任务分支。
-2. 运行 `python3 .wally/scripts/sop_context.py`，读取它实际输出的任务 overview、版本规则、项目配置和当前阶段。输出缺文件、多任务匹配或其他错误时先修复；不能绕过并继续实现。
-3. 在首次工作说明中报告真实的分支、任务目录、规则版本和当前阶段；无任务时如实说明需要创建。不得未读取就声称已读取。
+1. 读取 `.wally/core/entry.md`，运行 `python3 .wally/scripts/sop_context.py` 按实际分支定位任务。已有路由结果时直接使用；需要补查时只查缺失字段。
+2. 已定位任务时，按脚本输出加载任务 overview、绑定规则、项目配置和当前阶段。无任务且用户未指定分支时，按入口发分支选择并等待。本轮的路由到此结束。缺文件、多任务匹配等其他问题须解决后再继续实现。
+3. 在首次工作说明中报告实际分支、任务目录、规则版本和当前阶段。无任务时说明待创建，版本标注为当前安装版本。只报告已查证的事实。
 4. 进入每个阶段前读取对应阶段文件与所需绑定规则，填写 Clarify 和 Plan 后再实现。压缩上下文、恢复会话、切换分支及委派子 Agent 后重新定位；委派时明确传入任务目录、规则版本和阶段，子 Agent 也执行本检查。
 
 5. 知识库先读 `.wally/docs/INDEX.md`，按任务绑定版本的 `core/knowledge.md` 读取、更新和验收相关页。索引缺失时回查 Profile 的实际文档路径与源码，并记录缺口。
+6. 仓库受管 Skills 固定存放在 `.agents/skills/`（如 `clarify`、`sop-aware-code-review`、`wally-open-cli`），各主流 IDE/CLI 的 `skills/` 目录通过软链复用。进入 `01 Clarify`（且未按 SOP 正式跳过）时，必须先读取 `.agents/skills/clarify/SKILL.md` 与绑定版本的 `core/clarify.md`，再提问或填写 `01-clarify.md`。
 
 ## 阶段与完成条件
 
 仅用于已确认属于开发工作的新任务；咨询与轻量文档操作不激活本流程，已有开发任务始终以其绑定版本为准，本概览不能替代历史任务契约。
 
-- 01 Clarify：目标、范围、成功判据、关键约束、未决业务问题。先读本规则版本中的 `clarify.md`；已有用户输入可直接整理与校验，不重复访谈。
+- 01 Clarify：目标、范围、成功判据、关键约束、未决业务问题。先读 `.agents/skills/clarify/SKILL.md` 与本规则版本中的 `clarify.md`；已有用户输入可直接整理与校验，不重复访谈。
 - 02 Plan：影响范围、调用链/状态机、数据及协议兼容性、UT 和 IT 设计、风险与回滚。
-- 03 Implement + UT + Docs：先遵守本任务快照 `_rules/rules/` 中的项目规则，再 Red → Green → Refactor → 增量覆盖率 → Docs → 增量 CR。适用门禁未通过不得 Deploy。
+- 03 Implement + UT + Docs：先遵守 `.wally/rules/` 中的项目规则，再 Red → Green → Refactor → 增量覆盖率 → Docs → 增量 CR。适用门禁未通过不得 Deploy。
 - 04 Deploy：环境、基线、部署范围、生效验证、回滚。热更前保留缺陷基线。
 - 05 IT：按 Plan 执行，核验逐用例结果与总体门禁，完成缺陷 A/B。
-- 06 Review + Commit：复核变更后的证据、时间记录和遗留风险，完成外部系统/资源处置及提交准备，再按授权执行 Git。
+- 06 Review + Commit：先读 `.agents/skills/sop-aware-code-review/SKILL.md`（03 增量 CR 同样适用），复核变更后的证据、时间记录和遗留风险，完成外部系统/资源处置及提交准备，再按授权执行 Git。
+
+### 阶段依赖速查（Skill / Rules / 工具与检查点）
+
+| 阶段 | 依赖 Skill（`.agents/skills/`） | 依赖 Rules（绑定版本 / 任务快照） | 工具 / 检查点 |
+|---|---|---|---|
+| 01 Clarify | `clarify/SKILL.md` | `core/clarify.md`、`core/gates.md`、`core/knowledge.md` | `sop_context.py`、`create_task.py`、`date` |
+| 02 Plan | — | `core/workflow.md`、`core/gates.md`、`core/knowledge.md` | `.wally/docs/INDEX.md`、`date` |
+| 03 Implement + UT + Docs | `sop-aware-code-review/SKILL.md`（增量 CR） | `.wally/rules/`、`core/gates.md`、`core/knowledge.md` | `sop_context.py --checkpoint implement`、UT/覆盖率命令 |
+| 04 Deploy | 可选 `wally-open-cli/SKILL.md` | `core/gates.md` | `sop_context.py --checkpoint deploy`、任务快照 `execution.json` |
+| 05 IT | 可选 `wally-open-cli/SKILL.md` | `core/gates.md` | `sop_context.py --checkpoint it`、任务快照 `execution.json` |
+| 06 Review + Commit | `sop-aware-code-review/SKILL.md` | `.wally/review.md`、`.wally/commit.md`、`core/gates.md` | 客户端 `token_report.py`、`git`、`date` |
 
 新任务始终保留 01–06 六阶段。 显式标记 `readiness: pending` 的方法即使有 guide/command 也不完整，标记 BLOCKED 并按 `gaps` 向用户询问补齐，不能自动跳过；只有 ready 方法（或未带 readiness 的旧配置）按下述 command/guide 规则判断，ready 不等于执行通过。每次进入 Deploy/IT 前读取本任务 `execution.json`：对应 command 与 guide 都为空时自动跳过，不准备环境、不调用工具；使用创建任务时已生成的 SKIPPED 记录与零耗时行。配置了任一方法则按客户实际命令/指南执行，缺环境、权限、工具或执行失败均不得伪装成未配置而跳过。跳过不是通过，必须在 Review 说明未完成部署/集成验证；其他适用门禁继续执行。历史任务按自己的绑定版本恢复，不因新规则改写。
 

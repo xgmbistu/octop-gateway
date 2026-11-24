@@ -53,24 +53,6 @@ def execution_config(root):
     return config
 
 
-def snapshot_project_rules(root, inside, files, profile):
-    """Pin `.wally/rules` into the task so later edits do not change Implement."""
-    rules_dir = root / ".wally/rules"
-    if not rules_dir.exists():
-        return profile
-    if rules_dir.is_symlink() or not rules_dir.is_dir():
-        raise ValueError("refusing to snapshot a rules symlink: .wally/rules")
-    inside(".wally/rules")
-    for path in sorted(rules_dir.rglob("*")):
-        rel = path.relative_to(rules_dir).as_posix()
-        if path.is_symlink():
-            raise ValueError("refusing to snapshot a rules symlink: .wally/rules/" + rel)
-        if not path.is_file():
-            continue
-        files["_rules/rules/" + rel] = inside(".wally/rules/" + rel).read_text(encoding="utf-8")
-    return profile.replace(".wally/rules", "./_rules/rules")
-
-
 def templates(directory, steps, rule_root):
     if steps != 6:
         raise ValueError("new task templates must retain all six phases")
@@ -123,18 +105,9 @@ def create(root, name, branch):
     files = templates(inside(rule_root + "/plans-template"), state["steps"], rule_root)
     if "00-overview.md" not in files:
         raise ValueError("missing bound overview template")
-    profile = inside(".wally/profiles/project.md").read_text()
-    # Pin local project contract files as well as the SOP release.
-    for name_ in ("review.md", "commit.md"):
-        path = inside(".wally/" + name_)
-        if path.is_file():
-            files["_rules/" + name_] = path.read_text()
-            profile = profile.replace(".wally/" + name_, "./_rules/" + name_)
-    profile = snapshot_project_rules(root, inside, files, profile)
+    # Verify the shared project profile exists; tasks reference .wally/profiles/project.md directly.
+    inside(".wally/profiles/project.md").read_text()
     language = state.get("language", "zh")
-    label, unit = ("Workflow: ", " steps") if language == "en" else ("\u6d41\u7a0b\uff1a", " \u6b65")
-    profile = re.sub(r"(?m)^- " + re.escape(label) + r".*$", "- " + label + str(state["steps"]) + unit, profile)
-    files["profile.md"] = profile
     overview = files["00-overview.md"].replace("[YYYY-MM-DD] <Task title>", name).replace("[YYYY-MM-DD] <\u4efb\u52a1\u6807\u9898>", name)
     overview = overview.replace("`feature/xxx`", "`" + branch + "`").replace("| Created | YYYY-MM-DD |", "| Created | " + name[:10] + " |")
     overview = overview.replace("| \u521b\u5efa\u65e5\u671f | YYYY-MM-DD |", "| \u521b\u5efa\u65e5\u671f | " + name[:10] + " |")

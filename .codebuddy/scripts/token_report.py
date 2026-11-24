@@ -37,6 +37,7 @@ TOKEN_FILE_NAME = "token.json"
 CLIENT_CODEBUDDY = "codebuddy"
 CLIENT_CURSOR = "cursor"
 CLIENT_CODEX = "codex"
+CLIENT_CLAUDE = "claude"
 CODEBUDDY_SOURCES = ("ide_index", "cli_jsonl")
 
 
@@ -155,6 +156,8 @@ def client_label(item: dict) -> str:
     client = str(item.get("client") or "").strip()
     if client == CLIENT_CURSOR:
         return "Cursor"
+    if client == CLIENT_CLAUDE:
+        return "Claude"
     if client == CLIENT_CODEX:
         if item.get("agent_type") == "guardian":
             return "Codex / guardian 审批代理"
@@ -172,7 +175,7 @@ def _usage(item: dict) -> dict:
 def record_client(item: dict) -> str:
     """Client identity. CodeBuddy rows written before ``client`` existed keep only ``source``."""
     client = str(item.get("client") or "").strip()
-    if client in (CLIENT_CURSOR, CLIENT_CODEX, CLIENT_CODEBUDDY):
+    if client in (CLIENT_CURSOR, CLIENT_CODEX, CLIENT_CODEBUDDY, CLIENT_CLAUDE):
         return client
     if item.get("source") in CODEBUDDY_SOURCES:
         return CLIENT_CODEBUDDY
@@ -290,7 +293,7 @@ def render(requests: list[dict], token_rel: str, collection: dict | None = None,
         usage = _usage(item)
         for key in totals:
             if key == "credit":
-                if item.get("client") != CLIENT_CODEX:
+                if item.get("client") not in (CLIENT_CODEX, CLIENT_CLAUDE):
                     totals[key] += as_float(usage.get(key))
             else:
                 totals[key] += as_int(usage.get(key))
@@ -314,7 +317,7 @@ def render(requests: list[dict], token_rel: str, collection: dict | None = None,
                 reasoning=(f'{as_int(usage["reasoning_output_tokens"]):,}'
                            if "reasoning_output_tokens" in usage else "—"),
                 total=as_int(usage.get("total_tokens")),
-                credit=("—" if item.get("client") == CLIENT_CODEX
+                credit=("—" if item.get("client") in (CLIENT_CODEX, CLIENT_CLAUDE)
                         else format_credit(as_float(usage.get("credit")))),
             )
         )

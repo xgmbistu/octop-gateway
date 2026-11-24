@@ -8,7 +8,7 @@
     "readiness": "pending",
     "gaps": [
       "无真实测试环境部署入口：仓库为 Python 库（pyproject.toml: hatchling 构建，发布为 PyPI 包 octop-gateway），无 Dockerfile/Compose/部署脚本/服务编排；仅有构建与发布动作 make build、make publish-test（PYPI_REPO=testpypi）、make publish（PYPI_TOKEN）与 .github/workflows/release.yml（v* tag 触发，pypa/gh-action-pypi-publish + secrets.PYPI_API_TOKEN），属发布而非部署，不能作为 deploy.command",
-      "无目标测试环境：.wally/docs/devops/env.md 与 test-env-deploy.md 均为未填写模板，缺环境类型/地址/资源归属/访问与授权边界",
+      "无目标测试环境：.wally/docs/devops/env.md 仍为未填写模板，test-env-deploy.md 已据实记录环境缺失；仍缺环境类型/地址/资源归属/访问与授权边界",
       "无就绪与生效验证（verify）命令：无健康检查 / smoke / 生效检查入口",
       "无回滚（rollback）命令及缺陷修复前基线保留方法（PyPI 发布无就地回滚）",
       "无部署环境凭证获取方式：仅 PYPI_TOKEN / secrets.PYPI_API_TOKEN 为发布凭证，非部署凭证"

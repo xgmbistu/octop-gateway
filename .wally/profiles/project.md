@@ -4,7 +4,7 @@
 - 扩展版本：2.0
 - 流程：6 步
 - 语言/解释器/框架版本：引用项目实际规则，不假定最新版本
-- 项目规则：.wally/rules, AGENTS.md
+- 项目规则：.wally/rules, .cursor/rules, .windsurf/rules, .agent/rules, .github/copilot-instructions.md, AGENTS.md
 - 技术文档：.wally/docs/overview/system-architecture.md, .wally/docs/integrations/index.md, .wally/docs/apis/, .wally/docs/sqls/, .wally/docs/unittest/, .wally/docs/integration_test/, .wally/docs/devops/
 - 分支与默认基线：按项目 Git 约定
 
@@ -16,13 +16,13 @@ UT 命令、增量覆盖率命令、lint/格式化及 IT 命令：接入项目�
 ## 执行适配
 
 - Clarify：Core 指引，加本项目相关领域约束。
-- Implement：遵守 `.wally/rules/` 下的项目规则；进入实现后以本任务 `_rules/rules/` 快照为准。
+- Implement：遵守 `.wally/rules/` 下的项目规则。
 - Deploy：由客户在 `.wally/config.json` 的 deploy 中填写 command 或 guide；未配置自动跳过，已配置时按实际环境、授权、生效检查及回滚执行。
 - IT：由客户在 `.wally/config.json` 的 it 中填写 command 或 guide 及结果判定规则；未配置自动跳过。已配置但缺环境/工具、执行失败时如实阻塞，不改成跳过或通过。
 - Review：项目编码规则、版本矩阵及 `.wally/review.md`。
 - Commit：项目已有提交规范（接入时填写路径）；Commit/Push 分别按用户授权执行。
 - 外部需求系统/资源释放/云端委托：按项目需要配置，无配置不自动发起。
-- Token：codebuddy；未启用不记作零消耗。
+- Token：codex, cursor, codebuddy, claude；未启用不记作零消耗。
 
 ## 项目自定义
 

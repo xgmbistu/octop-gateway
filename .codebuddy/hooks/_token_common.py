@@ -71,6 +71,7 @@ MAX_CLAIMS = 5000
 CLIENT_CODEBUDDY = "codebuddy"
 CLIENT_CURSOR = "cursor"
 CLIENT_CODEX = "codex"
+CLIENT_CLAUDE = "claude"
 
 # Legacy CodeBuddy records predate the ``client`` field; infer from ``source``.
 CODEBUDDY_SOURCES = ("ide_index", "cli_jsonl")
