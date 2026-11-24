@@ -5,6 +5,7 @@ status: verified
 origin: human
 source_paths:
   - src/octop_gateway/__init__.py
+  - src/octop_gateway/hello.py
   - src/octop_gateway/channel.py
   - src/octop_gateway/manager.py
   - src/octop_gateway/models.py
@@ -45,13 +46,13 @@ last_verified: 2026-11-24
 # 系统技术架构（octop-gateway）
 
 > Source: `src/octop_gateway/**`（见 frontmatter `source_paths`），`pyproject.toml`、`README.md`
-> Last-verified: 2026-11-24（对照提交 `1cf169b` 的源码逐项核验）
+> Last-verified: 2026-11-24（对照当前工作树核验，含本任务新增的可选 hello 服务入口）
 > 本页为人工维护页（`origin: human` / `status: verified`），不自动覆盖；改动下方任一模块后按「变更影响定位」复核本页。
 
 ## 1. 组件定位与边界
 
 - **是什么**：`octop-gateway`（`pyproject.toml`：包名 `octop-gateway`，版本 `1.0.4`，`requires-python >=3.12`，hatchling 构建为 wheel/sdist 发布到 PyPI）是一个**多平台 IM 通道桥接库**，向上把 10 个 IM 平台的事件归一成统一的 `InboundMessage`，向下把宿主 Agent 输出的 `MessageEvent` 转换成各平台的发送调用。
-- **不是什么**：它是**同进程内嵌库**，不是常驻服务。没有自带 HTTP 服务、进程编排或部署入口（`.wally/config.json` 的 `deploy` 仍为 `readiness: pending`，其 gaps 明确记录「仓库为 Python 库，仅有构建与发布动作 `make build` / `make publish*` 与 `.github/workflows/release.yml`，属发布而非部署」）。平台连接由各适配器在宿主进程内主动建立。
+- **不是什么**：它是**同进程内嵌库**，不是常驻服务。库本身没有自带 HTTP 服务、进程编排或部署入口（`.wally/config.json` 的 `deploy` 仍为 `readiness: pending`，其 gaps 明确记录「仓库为 Python 库，仅有构建与发布动作 `make build` / `make publish*` 与 `.github/workflows/release.yml`，属发布而非部署」）。平台连接由各适配器在宿主进程内主动建立。另有可选的独立 hello HTTP 服务入口（`src/octop_gateway/hello.py`，`python -m octop_gateway.hello`），仅用于本地验证，不属于库的公共 API 面。
 - **外部依赖方向**：宿主（如 `octop-harness`）注入 `MessageProcessor` 并持有 `ChannelManager`；本库反向依赖各平台 SDK（`lark-oapi`、`dingtalk-stream`、`discord-py`、`wecom-aibot-sdk`、`paho-mqtt`、`python-telegram-bot`、`python-socketio`、`websockets`、`httpx`、`aiohttp`、`pydantic`、`cryptography` 等，见 `pyproject.toml`）。
 
 ## 2. 模块职责（逐项对照实现）
@@ -143,6 +144,7 @@ last_verified: 2026-11-24
 | 欲改动 | 必查源码 | 相关测试 |
 |---|---|---|
 | 新增 / 修改某平台适配器 | `channels/__init__.py`（`_CHANNEL_MAP`/`_CLASS_NAMES`/`ChannelKind`）、`channels/<kind>/`、`manager.py` 的 `add_*_channel` 便捷方法与类型提示、`README.md` 平台表 | `tests/channels/test_<kind>.py`、`tests/test_channel_registration.py` |
+| 新增 / 修改可选 HTTP 服务 | `src/octop_gateway/hello.py`、`.wally/docs/apis/hello/Hello.md`、`.wally/docs/apis/index.md` | `tests/test_hello.py`、`tests/test_hello_integration.py` |
 | 统一入站模型 / 字段 | `channel.py`（`parse_inbound` 契约、`_prepare_inbound`/`handle_inbound`）、`models.py`、所有适配器 `parse_inbound`、`group_context.py` 对 metadata 的读取 | `tests/test_channel.py`、`tests/test_models.py`、`tests/test_group_context.py` |
 | 出站 / 限流 / 超时 | `channel.py`（`reply_*`/`push_*`/`_send_*`/`_rate_limited_send`）、`constraints.py`、`push_routing.py`、各适配器 `_send_*` | `tests/test_channel.py`、`tests/test_constraints.py`、`tests/test_push_routing.py`、`tests/test_error_delivery.py` |
 | 群聊策略 | `group_context.py`、`models.py:GroupContext`、适配器注入的 metadata | `tests/test_group_context.py` |
