@@ -240,6 +240,7 @@ def git_branch(repo: Path) -> str:
         ["git", "branch", "--show-current"],
     ):
         try:
+            # NOCA:dangerous-subprocess-use-audit(argv list, no shell)
             out = subprocess.check_output(
                 command,
                 cwd=str(repo),
