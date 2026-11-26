@@ -54,14 +54,20 @@ test -f <产物路径> && echo "extra OK" || echo "需要构建"
 
 ### 2. 分步安装（仅在上面检查失败时执行）
 
+> 安装步骤供有环境准备授权的人员执行。SOP 初始化只记录项目认可的工具来源和安装步骤，并对照仓库配置核实命令。
+
 #### Step 1: 安装 pyenv
 
 ```bash
 # macOS
 brew install pyenv
 
-# Linux
-curl https://pyenv.run | bash
+# Linux：用发行版软件包安装。不要用 curl、wget 把远程安装脚本交给 shell 执行。
+# Debian / Ubuntu
+sudo apt-get update && sudo apt-get install -y pyenv
+# Fedora / RHEL
+sudo dnf install -y pyenv
+# 软件包不可用时，改用本机已有解释器或仓库自带安装脚本，仍不下载远程安装脚本。
 
 # 写入 shell 配置（仅首次）
 export PYENV_ROOT="$HOME/.pyenv"

@@ -217,7 +217,17 @@ def plain_document(root, value, inspect_file=True):
         parts = relative.parts
         if not parts or any(p == ".." for p in parts):
             return False
-        if parts[0] in (".git", ".agents", ".codex", ".cursor", ".claude", ".codebuddy", ".windsurf", ".agent", "skills"):
+        if parts[0] in (
+            ".git",
+            ".agents",
+            ".codex",
+            ".cursor",
+            ".claude",
+            ".codebuddy",
+            ".windsurf",
+            ".agent",
+            "skills",
+        ):
             return False
         if parts[0] == ".wally" and (len(parts) < 3 or parts[1] != "docs"):
             return False
@@ -267,7 +277,11 @@ def checkpoint_issue(root, result, checkpoint):
         method = config.get(checkpoint, {})
         evidence.append(config)
         if not method_configured(method):
-            gaps.append(checkpoint.upper() + " has no configured command or guide ready for execution; supply missing information: " + "; ".join(method.get("gaps", [])))
+            gaps.append(
+                checkpoint.upper()
+                + " has no configured command or guide ready for execution; supply missing information: "
+                + "; ".join(method.get("gaps", []))
+            )
     if not gaps:
         return None
     scope = json.dumps([result["branch"], result["task"], result["core"], result["phase"], checkpoint])

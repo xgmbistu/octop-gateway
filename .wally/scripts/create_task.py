@@ -129,7 +129,11 @@ def create(root, name, branch):
         annotation = ("\n\n## " + header + "\n\n- Status: " + status + "\n- Reason: " + reason +
                       "\n- Configuration snapshot: `./execution.json` → `" + phase + "`\n")
         if method.get("readiness") == "pending":
-            annotation += "- Setup pending; request missing information from the user: " + "; ".join(method.get("gaps", [])) + "\n"
+            annotation += (
+                "- Setup pending; request missing information from the user: "
+                + "; ".join(method.get("gaps", []))
+                + "\n"
+            )
         if not configured and method.get("readiness") != "pending":
             annotation += "- Skip decision at task creation: " + decided_at + "\n"
             overview = overview.replace("- [ ] " + number + ". " + title,

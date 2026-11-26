@@ -372,7 +372,8 @@ def render_health(requests: list[dict], collection: dict, warning: str) -> str:
         main = [r for r in codex if r.get("agent_kind") != "subagent" and r.get("agent_type") != "guardian"]
         sub = [r for r in codex if r.get("agent_kind") == "subagent" and r.get("agent_type") != "guardian"]
         guardian = [r for r in codex if r.get("agent_type") == "guardian"]
-        count = lambda rows: sum(as_int((r.get("usage") or {}).get("total_tokens")) for r in rows)
+        def count(rows):
+            return sum(as_int((r.get("usage") or {}).get("total_tokens")) for r in rows)
         approvals = f"guardian 审批 {len(guardian)} 次模型请求 / {count(guardian):,} tokens；" if guardian else ""
         lines.append(f"> Codex 已观测用量：主会话 {len(main)} 次模型请求 / {count(main):,} tokens；"
                      f"子代理 {len(sub)} 次模型请求 / {count(sub):,} tokens；{approvals}合计 {len(codex)} 次模型请求 / {count(codex):,} tokens。")
@@ -403,6 +404,7 @@ def refresh_codex(repo: Path, overview: Path) -> str:
     if not collector.is_file():
         return ""
     try:
+        # NOCA:dangerous-subprocess-use-audit(argv list, no shell)
         result = subprocess.run([sys.executable, str(collector), "--refresh-task", str(overview.parent)],
                                 capture_output=True, timeout=10)
         if result.returncode:

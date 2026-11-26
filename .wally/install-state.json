@@ -1,7 +1,7 @@
 {
   "schema": 2,
   "sop_version": "2.0",
-  "revision": "d96a7bdaec6d3809",
+  "revision": "887b4846ba86b1e8",
   "profile": "generic",
   "steps": 6,
   "docs": [
@@ -36,19 +36,19 @@
     ".wally/docs/integrations/index.md": "5d7763081db745f3eedd8f6ba080a56322d231904e5b52c21ce7dabe80810b09",
     ".wally/docs/overview/system-architecture.md": "f8a3b0456a700f5749b474b86df45e7795bf228312a917f2f2e0093cc28fab46",
     ".wally/docs/sqls/README.md": "1cd3453b90ff062f04488edc4c60fac3ada9207e4e9e175160835431b183d2b2",
-    ".wally/docs/unittest/unittest.md": "5966bd3d5120ac59b862ab481f8142876c04cf1cad6bb6d96fb6e1a05c75f6c7",
+    ".wally/docs/unittest/unittest.md": "e3dc110f703bb632f2193f0977dd894438849d53b36bf9addae51cb2203e9139",
     ".wally/review.md": "c837ffb0bbf8580aa3c7786d35dcc73599a8324768e643e670c45c9adffd53ed",
     ".wally/rules/README.md": "f0544995315c58ec866f6ae52251a6c193c97b92b7abb8765f537801c59009ea",
     ".wally/local/.gitignore": "cdbcae15105d6b781e620813c79c7e868740d4e9cc53ce6f5fcbbc12387adf4b",
     ".agents/skills/clarify/SKILL.md": "9ecce4417750abab0868539a824ec3726d1c95e89b5e0215fe9cd973ec02184d",
-    ".agents/skills/wally-open-cli/SKILL.md": "4f4631005fa13ac5a03324eca9cab8e0ca4caf8cea1f29755a962eb972440477",
-    "AGENTS.md": "393a5e0816adb0367f24fc1d678503ce38f6b836fd70fb475451bce74fdcb7b4",
+    ".agents/skills/wally-open-cli/SKILL.md": "b5252c64b305a9e6502ccf543de05b53ef484d693695930f085c8e1782a7f604",
+    "AGENTS.md": "e07427c7c1b2db10541bce424e8fff4509817ed00d5f2e4bab86aa990f73df2a",
     ".agents/skills/sop-aware-code-review/SKILL.md": "d374e2cf2dc2eb8c3a197d4a291f3245cf656c9693451a0504f59ba921da5484",
     ".agents/skills/sop-aware-code-review/references/sop.md": "8648c6307db7ac76478535c5e6e16f2cb835c9a668a0725d3d7c92107e00c085",
     ".cursor/rules/wally-sop.mdc": "8d2dba30ef300100a500bf10415f294be8c015c4badb22e7209ba3885e1bcef5",
     ".windsurf/rules/wally-sop.md": "395efb82ff8cd1c46d6ec6b677405c79a6ac5848beb5719d5810b899dc31b9dd",
     ".agent/rules/wally-sop.md": "395efb82ff8cd1c46d6ec6b677405c79a6ac5848beb5719d5810b899dc31b9dd",
-    ".github/copilot-instructions.md": "e708666b9ad2c02f294ea190af8f2329ec148e15ba4a9cde871f979803c639d0"
+    ".github/copilot-instructions.md": "1a8fcc7391aac680adac7bc9ae713c8906589ea9f1717ea1d9af8d230331b5bd"
   },
   "translation_sources": {},
   "custom_commit": false,

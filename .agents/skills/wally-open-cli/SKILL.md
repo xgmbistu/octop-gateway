@@ -19,7 +19,7 @@ description: |
 ## 准备
 
 1. 运行 `wally-open-cli --help`。命令不存在时安装开源包：`npm install -g @tencent/wally-open-cli@latest --registry=https://mirrors.tencent.com/npm/`。不要安装 `@tencent/wally-cli`，那个包面向内网部署，会把工单链接当成必填。
-2. 只有出现 `ModuleNotFoundError: No module named 'loguru'`、`httpx` 或 `pydantic` 时，才执行 `python3 -m pip install --user loguru httpx pydantic`，然后重试。不要用 `npm install` 安装这些 Python 包。系统 Python 受 PEP 668 限制时，改用 `WALLY_PYTHON` 指向的解释器，或在用户同意后加 `--break-system-packages`。
+2. 只有出现 `ModuleNotFoundError: No module named 'httpx'` 或 `pydantic` 时，才执行 `python3 -m pip install --user httpx pydantic`，然后重试。不要用 `npm install` 安装这些 Python 包。系统 Python 受 PEP 668 限制时，改用 `WALLY_PYTHON` 指向的解释器，或在用户同意后加 `--break-system-packages`。
 3. `wally-open-cli config show` 核对 `config.api_base_url`，地址必须包含实际端口。委托前可用 `curl -s <api_base_url>/ok` 预检，响应里有 `"ok": true` 再继续。不要在命令里写死环境 IP。
 
 配置优先级：命令行 > `WALLY_API_BASE_URL` > `~/.wally/config.json` > CLI 内置默认值。

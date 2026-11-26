@@ -742,7 +742,7 @@ _This file is a living document — keep it in sync when structure, conventions,
 
 在开始 Implement、Deploy、IT 的实际操作前，分别运行 `python3 .wally/scripts/sop_context.py --checkpoint implement`、`--checkpoint deploy`、`--checkpoint it`。Clarify/Plan 未记录完成或仍为空模板，以及用户准备执行未配置方法的 Deploy/IT 时，必须先展示缺失项、拟执行操作和影响，等待用户确认后才继续。默认自动跳过未配置的 Deploy/IT 不需要确认；确认例外也不提供执行方法，仍须取得真实命令/指南，不能猜测。
 
-检查点退出码 3 表示等待确认。使用提问工具或对话清楚展示原因与 `CONFIRM SOP <编号>`；用户需在聊天中明确发送该文本，输入 Hook 才会记录确认。Agent 不得自行发送确认、修改 `.wally/local/sop-confirmations.json`、伪造产物或反复重试。拒绝、无回复、无效或过期编号均不视为确认。同任务/阶段且相关材料未变时不重复询问；分支、任务、阶段、绑定规则或相关材料变化后重新检查。缺少输入 Hook 的环境只能保留等待状态或先补齐前置材料，不能声称自动确认。
+检查点退出码 3 表示等待确认。在回复正文清楚展示原因与 `CONFIRM SOP <编号>`，同一决定不要再调用提问工具或另发提问卡；前端会收成一张决定卡。用户仍需在聊天中明确发送该文本，输入 Hook 才会记录确认。Agent 不得自行发送确认、修改 `.wally/local/sop-confirmations.json`、伪造产物或反复重试。拒绝、无回复、无效或过期编号均不视为确认。同任务/阶段且相关材料未变时不重复询问；分支、任务、阶段、绑定规则或相关材料变化后重新检查。缺少输入 Hook 的环境只能保留等待状态或先补齐前置材料，不能声称自动确认。
 
 确认允许带缺项继续当前阶段，须在 overview 记录实际用户授权、缺失证据和未验证范围；不自动勾选前置阶段，不把 SKIPPED/未验证改为通过，不免除其他适用验收。质量要求由阶段检查与 Review 持续核验。普通工具操作不因 SOP 白名单或上下文错误被强制拒绝；Shell/MCP 不做全面拦截，阶段检查点由 Agent 主动调用，已有客户端权限和用户授权继续生效。
 

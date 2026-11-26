@@ -84,3 +84,11 @@ sessions/
 /.wally/plans/**/token.json.tmp.*
 /.wally/**/*.bk.*
 /.gitignore.bk.*
+# wally-init: share project knowledge and SOP rules
+!/.wally/
+/.wally/local/
+/.wally/plans/**/token.json
+/.wally/plans/**/token.json.tmp.*
+/.wally/**/*.bk.*
+/.gitignore.bk.*
+*.bk.[0-9]*
